@@ -1,7 +1,25 @@
 from flask import Flask, request, jsonify
 from config import genai, MODEL_NAME
+from content_fetcher import fetch_multiple_pages
 
 app = Flask(__name__)
+
+SITE_URLS = [
+    "https://everything-ug.netlify.app/",
+    "https://everything-ug.netlify.app/facts",
+    "https://everything-ug.netlify.app/culture",
+    "https://everything-ug.netlify.app/top-cities/kampala",
+    "https://everything-ug.netlify.app/religion",
+    "https://everything-ug.netlify.app/travel-tips",
+    "https://everything-ug.netlify.app/destinations",
+    "https://everything-ug.netlify.app/activities",
+    "https://everything-uganda-website.vercel.app/about"
+    
+]
+
+print("Loading website content....")
+SITE_CONTENT = fetch_multiple_pages(SITE_URLS)
+print("Website Content loaded")
 
 @app.route("/api/chat", methods=["POST"])
 def chat():
@@ -15,11 +33,21 @@ def chat():
     try:
         model = genai.GenerativeModel(MODEL_NAME)
 
+        prompt = f"""
+You are a chatbot assistant for Everything Uganda.
+Answer using ONLY the information from the website content below.
+Give a detailed, well-explained answer.
+
+COMPANY SITE CONTENT:
+{SITE_CONTENT}
+
+USER QUESTION: 
+{question}"""
+
         response = model.generate_content(
-            question
+            prompt
         )
         return jsonify({
-            "question": question,
             "answer": response.text
         })
     

@@ -16,3 +16,21 @@ def extract_visible_text(html: str) -> str:
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     return "\n".join(lines)
 
+def fetch_page(url: str) -> str:
+    response = requests.get(url, headers=HEADERS, timeout=15)
+    response.raise_for_status()
+    return extract_visible_text(response.text)
+
+def fetch_multiple_pages(urls: list[str]) -> str:
+    all_text = []
+
+    for url in urls:
+        try:
+            print(f"fetching: {url}")
+            page_text = fetch_page(url)
+            all_text.append(f"\n---CONTENT FROM {url} ---\n")
+            all_text.append(page_text)
+        except Exception as e:
+            print(f"Failed to fetch {url}: {e}")
+
+    return "\n".join(all_text)

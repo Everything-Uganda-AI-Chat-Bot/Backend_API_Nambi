@@ -8,6 +8,7 @@ flask = "*"
 python-dotenv = "*"
 google-generativeai = "*"
 requests = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 

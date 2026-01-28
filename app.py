@@ -6,7 +6,14 @@ app = Flask(__name__)
 
 SITE_URLS = [
     "https://everything-ug.netlify.app/",
-    "https://everything-ug.netlify.app/facts"
+    "https://everything-ug.netlify.app/facts",
+    "https://everything-ug.netlify.app/culture",
+    "https://everything-ug.netlify.app/top-cities/kampala",
+    "https://everything-ug.netlify.app/religion",
+    "https://everything-ug.netlify.app/travel-tips",
+    "https://everything-ug.netlify.app/destinations",
+    "https://everything-ug.netlify.app/activities",
+    "https://everything-uganda-website.vercel.app/about"
     
 ]
 
@@ -27,7 +34,7 @@ def chat():
         model = genai.GenerativeModel(MODEL_NAME)
 
         prompt = f"""
-YYou are a knowledgeable assistant for Everything Uganda.
+You are a chatbot assistant for Everything Uganda.
 Answer using ONLY the information from the website content below.
 Give a detailed, well-explained answer.
 

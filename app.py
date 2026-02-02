@@ -15,7 +15,11 @@ SITE_URLS = [
     "https://everything-ug.netlify.app/travel-tips",
     "https://everything-ug.netlify.app/destinations",
     "https://everything-ug.netlify.app/activities",
-    "https://everything-uganda-website.vercel.app/about"
+    "https://everything-ug.netlify.app/about",
+    "https://everything-ug.netlify.app/where-to-stay",
+    "https://everything-ug.netlify.app/insights",
+    "https://everything-ug.netlify.app/impact",
+    "https://everything-ug.netlify.app/holiday-booking"
     
 ]
 
@@ -37,8 +41,8 @@ def chat():
 
         prompt = f"""
 You are a chatbot assistant for Everything Uganda.
-Answer using ONLY the information from the website content below.
-Give a detailed, well-explained answer.
+Your name is Nambi.
+Answer using this information plus including all your knowledeg base.
 
 COMPANY SITE CONTENT:
 {SITE_CONTENT}

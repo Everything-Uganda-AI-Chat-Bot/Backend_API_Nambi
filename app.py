@@ -2,9 +2,12 @@ from flask import Flask, request, jsonify
 from config import genai, MODEL_NAME
 from content_fetcher import fetch_multiple_pages
 from flask_cors import CORS
+from flasgger import Swagger
 
 app = Flask(__name__)
 CORS(app)
+
+swagger = Swagger(app)
 
 SITE_URLS = [
     "https://everything-ug.netlify.app/",
@@ -20,20 +23,50 @@ SITE_URLS = [
     "https://everything-ug.netlify.app/insights",
     "https://everything-ug.netlify.app/impact",
     "https://everything-ug.netlify.app/holiday-booking"
-    
 ]
 
 print("Loading website content....")
 SITE_CONTENT = fetch_multiple_pages(SITE_URLS)
 print("Website Content loaded")
 
+
 @app.route("/api/chat", methods=["POST"])
 def chat():
+    """
+    Chat with Nambi (Everything Uganda chatbot)
+    ---
+    tags:
+      - Chatbot
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            question:
+              type: string
+              example: "Tell me about Kampala"
+    responses:
+      200:
+        description: Bot response
+        schema:
+          type: object
+          properties:
+            answer:
+              type: string
+              example: "Kampala is the capital city of Uganda..."
+      400:
+        description: Missing question
+      500:
+        description: Server error
+    """
+
     data = request.get_json()
 
     if not data or "question" not in data:
         return jsonify({"error": "Question is required"}), 400
-    
+
     question = data["question"]
 
     try:
@@ -47,21 +80,22 @@ Answer using this information plus including all your knowledeg base.
 COMPANY SITE CONTENT:
 {SITE_CONTENT}
 
-USER QUESTION: 
-{question}"""
+USER QUESTION:
+{question}
+"""
 
-        response = model.generate_content(
-            prompt
-        )
+        response = model.generate_content(prompt)
+
         return jsonify({
             "answer": response.text
         })
-    
+
     except Exception as e:
         return jsonify({
             "error": "Failed to generate response try again later",
             "details": str(e)
         }), 500
-    
+
+
 if __name__ == "__main__":
     app.run(debug=True)

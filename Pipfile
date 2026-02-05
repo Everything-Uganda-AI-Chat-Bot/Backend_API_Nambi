@@ -12,6 +12,7 @@ playwright = "*"
 flask = "*"
 flask-cors = "*"
 gunicorn = "*"
+flasgger = "*"
 
 [dev-packages]
 

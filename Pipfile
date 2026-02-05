@@ -13,6 +13,9 @@ flask = "*"
 flask-cors = "*"
 gunicorn = "*"
 flasgger = "*"
+flask-sqlalchemy = "*"
+psycopg2-binary = "*"
+werkzeug = "*"
 
 [dev-packages]
 

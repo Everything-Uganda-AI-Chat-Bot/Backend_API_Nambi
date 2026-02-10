@@ -1,9 +1,6 @@
 import os
-import google.generativeai as genai
 
 MODEL_NAME = "gemini-2.0-flash"
-
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv(

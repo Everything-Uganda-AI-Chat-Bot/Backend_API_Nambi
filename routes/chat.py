@@ -1,6 +1,8 @@
+
 from flask import Blueprint, request, jsonify
-from config import genai, MODEL_NAME
+from gemini import get_gemini_model
 from services.content_fetcher import fetch_multiple_pages
+
 
 chat_bp = Blueprint("chat", __name__)
 
@@ -24,34 +26,8 @@ print("Loading website content....")
 SITE_CONTENT = fetch_multiple_pages(SITE_URLS)
 print("Website Content loaded")
 
-
 @chat_bp.route("/chat", methods=["POST"])
 def chat():
-    """
-    Chat with Nambi (Everything Uganda chatbot)
-    ---
-    tags:
-      - Chatbot
-    parameters:
-      - name: body
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            question:
-              type: string
-              example: "Tell me about Kampala"
-    responses:
-      200:
-        description: Bot response
-        schema:
-          type: object
-          properties:
-            answer:
-              type: string
-    """
-
     data = request.get_json()
 
     if not data or "question" not in data:
@@ -60,7 +36,7 @@ def chat():
     question = data["question"]
 
     try:
-        model = genai.GenerativeModel(MODEL_NAME)
+        model = get_gemini_model()  # ✅ Safe on Render
 
         prompt = f"""
 You are a chatbot assistant for Everything Uganda.
@@ -80,6 +56,6 @@ USER QUESTION:
 
     except Exception as e:
         return jsonify({
-            "error": "Failed to generate response try again later",
+            "error": "Failed to generate response, try again later",
             "details": str(e)
         }), 500

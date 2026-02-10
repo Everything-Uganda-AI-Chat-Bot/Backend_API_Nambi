@@ -1,8 +1,7 @@
-
 from flask import Blueprint, request, jsonify
+from functools import lru_cache
 from gemini import get_gemini_model
 from services.content_fetcher import fetch_multiple_pages
-
 
 chat_bp = Blueprint("chat", __name__)
 
@@ -22,12 +21,55 @@ SITE_URLS = [
     "https://everything-ug.netlify.app/holiday-booking"
 ]
 
-print("Loading website content....")
-SITE_CONTENT = fetch_multiple_pages(SITE_URLS)
-print("Website Content loaded")
+# Use LRU cache to store content so it's fetched only once
+@lru_cache(maxsize=1)
+def get_site_content():
+    print("Loading website content....")
+    content = fetch_multiple_pages(SITE_URLS)
+    print("Website Content loaded")
+    return content
+
+# Preload content safely at app startup
+try:
+    get_site_content()
+except Exception as e:
+    print("Warning: Failed to preload site content at startup:", e)
+    # App will still start; first request will try to fetch content
 
 @chat_bp.route("/chat", methods=["POST"])
 def chat():
+    """
+    Chat with Nambi (Everything Uganda chatbot)
+    ---
+    tags:
+      - Chatbot
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - question
+          properties:
+            question:
+              type: string
+              example: "Tell me about Kampala"
+    responses:
+      200:
+        description: Bot response
+        schema:
+          type: object
+          properties:
+            answer:
+              type: string
+      400:
+        description: Missing question
+      500:
+        description: Server error
+    """
     data = request.get_json()
 
     if not data or "question" not in data:
@@ -36,22 +78,21 @@ def chat():
     question = data["question"]
 
     try:
-        model = get_gemini_model()  # ✅ Safe on Render
+        model = get_gemini_model()
+        site_content = get_site_content()  # Uses cached content
 
         prompt = f"""
 You are a chatbot assistant for Everything Uganda.
 Your name is Nambi.
-Answer using this information plus including all your knowledge base.
 
 COMPANY SITE CONTENT:
-{SITE_CONTENT}
+{site_content}
 
 USER QUESTION:
 {question}
 """
 
         response = model.generate_content(prompt)
-
         return jsonify({"answer": response.text})
 
     except Exception as e:

@@ -1,6 +1,6 @@
 import os
 
-MODEL_NAME = "gemini-2.0-flash"
+# MODEL_NAME = "gemini-2.0-flash"
 
 class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv(

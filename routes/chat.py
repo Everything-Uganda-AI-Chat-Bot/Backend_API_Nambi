@@ -8,33 +8,30 @@ chat_bp = Blueprint("chat", __name__)
 SITE_URLS = [
     "https://everything-ug.netlify.app/",
     "https://everything-ug.netlify.app/facts",
-    "https://everything-ug.netlify.app/culture",
-    "https://everything-ug.netlify.app/top-cities/kampala",
-    "https://everything-ug.netlify.app/religion",
-    "https://everything-ug.netlify.app/travel-tips",
-    "https://everything-ug.netlify.app/destinations",
-    "https://everything-ug.netlify.app/activities",
-    "https://everything-ug.netlify.app/about",
-    "https://everything-ug.netlify.app/where-to-stay",
-    "https://everything-ug.netlify.app/insights",
-    "https://everything-ug.netlify.app/impact",
+    # "https://everything-ug.netlify.app/culture",
+    # "https://everything-ug.netlify.app/top-cities/kampala",
+    # "https://everything-ug.netlify.app/religion",
+    # "https://everything-ug.netlify.app/travel-tips",
+    # "https://everything-ug.netlify.app/destinations",
+    # "https://everything-ug.netlify.app/activities",
+    # "https://everything-ug.netlify.app/about",
+    # "https://everything-ug.netlify.app/where-to-stay",
+    # "https://everything-ug.netlify.app/insights",
+    # "https://everything-ug.netlify.app/impact",
     "https://everything-ug.netlify.app/holiday-booking"
 ]
 
-# Use LRU cache to store content so it's fetched only once
+# Lazy-load site content once, cache with LRU
 @lru_cache(maxsize=1)
 def get_site_content():
-    print("Loading website content....")
-    content = fetch_multiple_pages(SITE_URLS)
-    print("Website Content loaded")
-    return content
-
-# Preload content safely at app startup
-try:
-    get_site_content()
-except Exception as e:
-    print("Warning: Failed to preload site content at startup:", e)
-    # App will still start; first request will try to fetch content
+    try:
+        print("Fetching site content...")
+        content = fetch_multiple_pages(SITE_URLS)
+        print("Site content loaded.")
+        return content
+    except Exception as e:
+        print("Warning: Failed to fetch site content:", e)
+        return ""
 
 @chat_bp.route("/chat", methods=["POST"])
 def chat():
@@ -71,7 +68,6 @@ def chat():
         description: Server error
     """
     data = request.get_json()
-
     if not data or "question" not in data:
         return jsonify({"error": "Question is required"}), 400
 
@@ -79,7 +75,7 @@ def chat():
 
     try:
         model = get_gemini_model()
-        site_content = get_site_content()  # Uses cached content
+        site_content = get_site_content() 
 
         prompt = f"""
 You are a chatbot assistant for Everything Uganda.
@@ -100,3 +96,4 @@ USER QUESTION:
             "error": "Failed to generate response, try again later",
             "details": str(e)
         }), 500
+

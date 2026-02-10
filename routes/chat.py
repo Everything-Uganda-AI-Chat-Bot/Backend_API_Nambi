@@ -8,16 +8,16 @@ chat_bp = Blueprint("chat", __name__)
 SITE_URLS = [
     "https://everything-ug.netlify.app/",
     "https://everything-ug.netlify.app/facts",
-    # "https://everything-ug.netlify.app/culture",
-    # "https://everything-ug.netlify.app/top-cities/kampala",
-    # "https://everything-ug.netlify.app/religion",
-    # "https://everything-ug.netlify.app/travel-tips",
-    # "https://everything-ug.netlify.app/destinations",
-    # "https://everything-ug.netlify.app/activities",
-    # "https://everything-ug.netlify.app/about",
-    # "https://everything-ug.netlify.app/where-to-stay",
-    # "https://everything-ug.netlify.app/insights",
-    # "https://everything-ug.netlify.app/impact",
+    "https://everything-ug.netlify.app/culture",
+    "https://everything-ug.netlify.app/top-cities/kampala",
+    "https://everything-ug.netlify.app/religion",
+    "https://everything-ug.netlify.app/travel-tips",
+    "https://everything-ug.netlify.app/destinations",
+    "https://everything-ug.netlify.app/activities",
+    "https://everything-ug.netlify.app/about",
+    "https://everything-ug.netlify.app/where-to-stay",
+    "https://everything-ug.netlify.app/insights",
+    "https://everything-ug.netlify.app/impact",
     "https://everything-ug.netlify.app/holiday-booking"
 ]
 

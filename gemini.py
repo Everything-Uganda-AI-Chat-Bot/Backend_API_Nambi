@@ -5,7 +5,7 @@ from logger import get_logger
 log = get_logger("gemini")
 
 _client = None
-_model_name = "gemini-2.5-flash"  # confirmed working on this key
+_model_name = "gemini-2.5-flash"
 
 def _get_client():
     global _client
@@ -20,7 +20,7 @@ def _get_client():
 try:
     _get_client()
 except Exception as e:
-    log.warning(f"Gemini pre-warm failed: {e}")
+    pass
 
 def get_gemini_model():
     return _GeminiWrapper()

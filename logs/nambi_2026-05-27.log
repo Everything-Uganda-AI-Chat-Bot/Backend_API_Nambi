@@ -1,0 +1,2 @@
+2026-05-27 19:35:04 [INFO] gemini: Gemini client ready — model: gemini-2.5-flash
+2026-05-27 19:35:33 [DEBUG] asyncio: Using proactor: IocpProactor
